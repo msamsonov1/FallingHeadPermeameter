@@ -1,0 +1,51 @@
+import math
+
+# Input the data
+h1 = float(input("Enter the initial head (h1) in inches: "))
+h2 = float(input("Enter the final head (h2) in inches: "))
+t = float(input("Enter the time (t) in seconds: "))
+L = float(input("Enter the length (L) in inches: "))
+A = float(input("Enter the cross-sectional area (A) in square inches: "))
+
+# Convert input units to centimeters
+h1 = h1 * 2.54
+h2 = h2 * 2.54
+L = L * 2.54
+A = A * 6.4516
+
+# Calculate the hydraulic conductivity (k)
+k = (A*L)/(t*(h1 - h2))
+
+# Calculate the permeability (k) assuming the soil is homogeneous and isotropic
+G = 32.2  # gravitational acceleration in ft/s^2
+k_perm = k/(G*12)
+
+# Calculate the hydraulic gradient (i)
+i = (h1 - h2)/L
+
+# Calculate the coefficient of permeability (k) assuming the soil is layered
+P = (2*math.log10(L/A)) + 0.78
+k_layered = (A*L)/(t*P)
+
+# Convert the output units to US units
+k = k / 0.3048
+k_layered = k_layered / 0.3048
+
+# Classify the soil based on the hydraulic conductivity (k)
+if k < 1e-6:
+    soil_type = "Clay"
+elif k < 1e-4:
+    soil_type = "Silty or Sandy Clay"
+elif k < 1e-2:
+    soil_type = "Silt or Clayey Sand"
+elif k < 1:
+    soil_type = "Sand"
+else:
+    soil_type = "Gravel or Coarse Sand"
+
+# Output the results
+print("Hydraulic conductivity (k) = {:.2e} ft/s".format(k))
+print("Permeability (k) assuming homogeneous and isotropic soil = {:.2e} ft/s".format(k_perm))
+print("Hydraulic gradient (i) = {:.4f}".format(i))
+print("Coefficient of permeability (k) assuming layered soil = {:.2e} ft/s".format(k_layered))
+print("Soil type: {}".format(soil_type))
